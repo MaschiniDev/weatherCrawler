@@ -16,10 +16,15 @@ import java.util.HashMap;
 public class Main {
     public static void main(String[] args) {
         try {
-            //Dates
+            /*
+            Predata
+            Data like hardcoded info or changing values for program init
+             */
             String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyy"));
             String year = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy"));
+            String[] allMonths = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "OCT", "NOV", "DEC"};
 
+            //Array lists
             ArrayList listTemps = new ArrayList();
             ArrayList listDates = new ArrayList();
             ArrayList listMonths = new ArrayList();
@@ -49,12 +54,17 @@ public class Main {
                         months.put(listMonths.get(i).toString(), days);
 
                     }
-                    //System.out.println(months.get("FEB").get("1"));
-
-                    if (months.get("FEB") != null)
-                        System.out.println("found");
+                    //TODO missing/error months
+                    for (int i = 0; i < allMonths.length; i++) {
+                        if (months.get(allMonths[i]) != null) {
+                            System.out.println("found: " + allMonths[i]);
+                        } else {
+                            System.out.println("err: " + allMonths[i]);
+                        }
+                    }
 
                 } else {
+                    //TODO idk, change something
                     PrintWriter writer = new PrintWriter(year + ".json", "UTF-8");
                     writer.print("{\"JAN\":{\"1\":{\"01.01.17\":\"10\"}},\"FEB\":{\"1\":{\"01.02.17\":\"25\"}},\"MAR\":{\"1\":{\"01.03.17\":\"30\"}},\"APR\":{\"1\":{\"01.02.17\":\"25\"}},\"MAY\":{\"1\":{\"01.03.17\":\"30\"}},\"JUN\":{\"1\":{\"01.02.17\":\"25\"}},\"JUL\":{\"1\":{\"01.03.17\":\"30\"}},\"AUG\":{\"1\":{\"01.02.17\":\"25\"}},\"SEP\":{\"1\":{\"01.03.17\":\"30\"}},\"OCT\":{\"1\":{\"01.02.17\":\"25\"}},\"NOV\":{\"1\":{\"01.03.17\":\"30\"}},\"DEC\":{\"1\":{\"01.02.17\":\"25\"}}}");
                 }
