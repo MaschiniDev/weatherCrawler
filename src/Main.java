@@ -1,3 +1,4 @@
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.jsoup.Jsoup;
@@ -10,8 +11,7 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args) {
@@ -22,24 +22,53 @@ public class Main {
 
             ArrayList listTemps = new ArrayList();
             ArrayList listDates = new ArrayList();
+            ArrayList listMonths = new ArrayList();
 
             File jFile = new File(year + ".json");
+
+            HashMap<String, HashMap> months = new HashMap<>();
+            HashMap<String, Object> days = new HashMap<>();
 
             //TODO Maps
             try {
                 if (jFile.exists()) {
                     Object obj = new JSONParser().parse(new FileReader(year + ".json"));
-                } else {
+                    JSONObject jMonths = (JSONObject) obj;
+                    JSONObject jDays;
 
+                    listMonths.addAll(jMonths.keySet());
+
+                    for (int i = 0; i < jMonths.size(); i++) {
+                        jDays = (JSONObject) jMonths.get(listMonths.get(i));
+                        System.out.println(listMonths.get(i));
+
+                        for (int j = 0; j < jDays.size(); j++) {
+                            days.put(Integer.toString(j + 1), jDays.get(Integer.toString(j + 1)));
+                            System.out.println((j + 1 + ". ") + days.get(Integer.toString(j + 1)));
+                        }
+                        months.put(listMonths.get(i).toString(), days);
+
+                    }
+                    //System.out.println(months.get("FEB").get("1"));
+
+                    if (months.get("FEB") != null)
+                        System.out.println("found");
+
+                } else {
+                    PrintWriter writer = new PrintWriter(year + ".json", "UTF-8");
+                    writer.print("{\"JAN\":{\"1\":{\"01.01.17\":\"10\"}},\"FEB\":{\"1\":{\"01.02.17\":\"25\"}},\"MAR\":{\"1\":{\"01.03.17\":\"30\"}},\"APR\":{\"1\":{\"01.02.17\":\"25\"}},\"MAY\":{\"1\":{\"01.03.17\":\"30\"}},\"JUN\":{\"1\":{\"01.02.17\":\"25\"}},\"JUL\":{\"1\":{\"01.03.17\":\"30\"}},\"AUG\":{\"1\":{\"01.02.17\":\"25\"}},\"SEP\":{\"1\":{\"01.03.17\":\"30\"}},\"OCT\":{\"1\":{\"01.02.17\":\"25\"}},\"NOV\":{\"1\":{\"01.03.17\":\"30\"}},\"DEC\":{\"1\":{\"01.02.17\":\"25\"}}}");
                 }
             } catch (ParseException pe) {
                 pe.printStackTrace();
             }
 
+
+
             File f = new File(date + ".txt");
             if (!f.exists()) {
                 //parse website
                 Document rawWebsite = Jsoup.connect("https://weather.com/de-DE/wetter/10tage/l/GMXX5318:1:GM").timeout(9001).get();
+                //TODO Generate new File if no exist
                 PrintWriter file = new PrintWriter(date + ".txt", "UTF-8");
 
                 //parse temps
