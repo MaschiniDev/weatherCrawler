@@ -10,31 +10,43 @@ import java.util.HashMap;
 
 public class Main {
 
-    static public Document website(String url) {
+    static void welcome() {
+        System.out.println("########################");
+        System.out.println("#    by Malte Schink   #");
+        System.out.println("#       (c) 2017       #");
+        System.out.println("########################");
+        System.out.println("> DataCrawler gestartet");
+    }
+
+    static Document website(String url) {
         Document raw = null;
         try {
             raw = Jsoup.connect(url).timeout(9001).get();
         } catch (IOException ioe) {
-            System.out.println("Connection Timeout");
-            System.exit(1);
+            System.out.println("> Connection Timeout");
+            System.out.println("> Please Restart");
+            System.exit(0);
         }
         return  raw;
     }
 
 
     public static void main(String[] args) {
+
+        //start
         System.console();
-        System.out.println("DataCrawler gestartet");
+        welcome();
+
         Document raw = website("https://weather.com/de-DE/wetter/10tage/l/GMXX5318:1:GM");
         HashMap<String, HashMap<String, String>> year = new HashMap<>();
 
-        System.out.println("Checking for existing File");
+        System.out.println("> Checking for existing File");
         if (new File("temperaturen.json").exists()) {
             year = (HashMap) rJSON("temperaturen.json");
-            System.out.println("Parse Data from File");
+            System.out.println("> Parse Data from File");
         }
 
-        System.out.println("Adding Infos");
+        System.out.println("> Adding Infos");
         for (int i = 0; i < raw.getElementsByClass("day-detail").size(); i++) {
             HashMap<String, String> temps = new HashMap();
 
@@ -42,7 +54,6 @@ public class Main {
             String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyy"));
 
             temps.put(today,temperatur);
-
 
             String key = raw.select(".day-detail").get(i).text().replace(". ", "") + LocalDateTime.now().format((DateTimeFormatter.ofPattern("yyy")));
 
@@ -54,7 +65,7 @@ public class Main {
                 year.replace(key, newEntry);
             }
         }
-        System.out.println("Save Data in File");
+        System.out.println("> Save Data in File");
         wJSON(year);
     }
 

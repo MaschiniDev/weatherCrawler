@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="weatherCrawler:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/weatherCrawler_jar</output-path>
+    <output-path>out/artifacts/weatherCrawler_jar</output-path>
     <root id="archive" name="weatherCrawler.jar">
       <element id="module-output" name="weatherCrawler" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/json-simple.jar" path-in-jar="/" />
