@@ -15,7 +15,9 @@ public class Main {
         System.out.println("#    by Malte Schink   #");
         System.out.println("#       (c) 2017       #");
         System.out.println("########################");
-        System.out.println("> DataCrawler gestartet");
+        System.out.println("\n Choose Action:");
+        System.out.println("[U]pdate Data \n" +
+                           "[E]xport Data");
     }
 
     static Document website(String url) {
@@ -23,8 +25,7 @@ public class Main {
         try {
             raw = Jsoup.connect(url).timeout(9001).get();
         } catch (IOException ioe) {
-            System.out.println("> Connection Timeout");
-            System.out.println("> Please Restart");
+            System.out.println("> Connection Timeout \n> Please Restart");
             System.exit(0);
         }
         return  raw;
@@ -32,11 +33,61 @@ public class Main {
 
 
     public static void main(String[] args) {
-
         //start
-        System.console();
         welcome();
 
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            String action = reader.readLine();
+
+            if (action.contains("u") || action.contains("U")) {
+                update();
+            } else if (action.contains("e") || action.contains("E")) {
+                System.out.println("Choose a day \n Example: 5. AUG 2017");
+                export(reader.readLine().replace(".", "").replace(" ", "").toUpperCase());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    static void export(String key) {
+        System.out.println("> Export started");
+        HashMap<String, HashMap<String, String>> year = new HashMap<>();
+        HashMap<String, String> day = new HashMap<>();
+
+        if (new File("temperaturen.json").exists()) {
+            year = (HashMap) rJSON("temperaturen.json");
+        } else {
+            System.out.println("> No availabale Data (File Not Found)");
+        }
+
+        if (year.containsKey(key)) {
+            day = year.get(key);
+            System.out.println(day);
+        } else if (!year.containsKey(key)) {
+            boolean workingKey = false;
+            System.out.println("> No availabale Data (date is Wrong)\n" + key);
+            while (!workingKey) {
+                try {
+                    System.out.println("Enter new date: ");
+                    key = new BufferedReader(new InputStreamReader(System.in)).readLine().replace(".", "").replace(" ", "").toUpperCase();
+                    if (year.containsKey(key)) {
+                        workingKey = true;
+                    } else if (!year.containsKey(key)) {
+                        System.out.println("Try again!");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            export(key);
+        }
+    }
+
+    static void update() {
+        System.out.println("> Update started");
         Document raw = website("https://weather.com/de-DE/wetter/10tage/l/GMXX5318:1:GM");
         HashMap<String, HashMap<String, String>> year = new HashMap<>();
 
