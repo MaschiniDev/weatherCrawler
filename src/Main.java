@@ -138,7 +138,6 @@ public class Main {
 
         try {
             json = (JSONObject) new JSONParser().parse(new FileReader(file));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
