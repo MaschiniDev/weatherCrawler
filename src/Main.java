@@ -4,9 +4,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+import java.util.*;
 
 public class Main {
 
@@ -64,8 +65,23 @@ public class Main {
         }
 
         if (year.containsKey(key)) {
-            day = year.get(key);
-            System.out.println(day);
+            try {
+                day = year.get(key);
+                List<String> keys = Arrays.asList(day.keySet().toArray(new String[day.keySet().size()]));
+                System.out.println(keys);
+                BufferedWriter writer = new BufferedWriter(new FileWriter(key + ".csv"));
+
+                for (int i = 0; i < day.keySet().size(); i++) {
+                    String[] temps = day.get(keys.get(i)).replace("°", "").split("/");
+                    writer.write(keys.get(i) + ";" + temps[0] + ";"+ temps[1] + ";");
+                    writer.newLine();
+                }
+                writer.flush();
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         } else if (!year.containsKey(key)) {
             boolean workingKey = false;
             System.out.println("> No availabale Data (date is Wrong)\n" + key);
