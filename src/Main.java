@@ -4,7 +4,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -50,7 +49,6 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     static void export(String key) {
@@ -71,10 +69,11 @@ public class Main {
                 System.out.println(keys);
                 BufferedWriter writer = new BufferedWriter(new FileWriter(key + ".csv"));
 
+                writer.write(key + "\nDaten vom;Max;Min;");
                 for (int i = 0; i < day.keySet().size(); i++) {
                     String[] temps = day.get(keys.get(i)).replace("°", "").split("/");
-                    writer.write(keys.get(i) + ";" + temps[0] + ";"+ temps[1] + ";");
                     writer.newLine();
+                    writer.write(keys.get(i) + ";" + temps[0] + ";"+ temps[1] + ";");
                 }
                 writer.flush();
                 writer.close();
